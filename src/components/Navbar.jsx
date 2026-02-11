@@ -1,13 +1,34 @@
 import React, { useState } from "react";
-import { Link, NavLink } from "react-router-dom";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline"; // Need to install heroicons or use svg
+import { Link, NavLink, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const { isAuthenticated, logout } = useAuth();
+  const navigate = useNavigate();
 
   const toggleMenu = () => {
     setIsOpen(!isOpen);
   };
+
+  const handleLogout = () => {
+    logout();
+    navigate("/");
+  };
+
+  const navLinkClass = ({ isActive }) =>
+    `px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
+      isActive
+        ? "bg-gray-900 text-white"
+        : "text-gray-300 hover:bg-gray-700 hover:text-white"
+    }`;
+
+  const mobileNavLinkClass = ({ isActive }) =>
+    `block px-3 py-2 rounded-md text-base font-medium ${
+      isActive
+        ? "bg-gray-900 text-white"
+        : "text-gray-300 hover:bg-gray-700 hover:text-white"
+    }`;
 
   return (
     <nav className="bg-gray-800 border-b border-gray-700 sticky top-0 z-50">
@@ -22,42 +43,33 @@ const Navbar = () => {
           </div>
           <div className="hidden md:block">
             <div className="ml-10 flex items-baseline space-x-4">
-              <NavLink
-                to="/"
-                className={({ isActive }) =>
-                  `px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
-                    isActive
-                      ? "bg-gray-900 text-white"
-                      : "text-gray-300 hover:bg-gray-700 hover:text-white"
-                  }`
-                }
-              >
+              <NavLink to="/" className={navLinkClass}>
                 Home
               </NavLink>
-              <NavLink
-                to="/about"
-                className={({ isActive }) =>
-                  `px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
-                    isActive
-                      ? "bg-gray-900 text-white"
-                      : "text-gray-300 hover:bg-gray-700 hover:text-white"
-                  }`
-                }
-              >
+              <NavLink to="/about" className={navLinkClass}>
                 About
               </NavLink>
-              <NavLink
-                to="/contact"
-                className={({ isActive }) =>
-                  `px-3 py-2 rounded-md text-sm font-medium transition-colors duration-200 ${
-                    isActive
-                      ? "bg-gray-900 text-white"
-                      : "text-gray-300 hover:bg-gray-700 hover:text-white"
-                  }`
-                }
-              >
+              <NavLink to="/contact" className={navLinkClass}>
                 Contact
               </NavLink>
+
+              {isAuthenticated ? (
+                <>
+                  <NavLink to="/dashboard" className={navLinkClass}>
+                    Dashboard
+                  </NavLink>
+                  <button
+                    onClick={handleLogout}
+                    className="px-3 py-2 rounded-md text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white transition-colors duration-200"
+                  >
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <NavLink to="/login" className={navLinkClass}>
+                  Login
+                </NavLink>
+              )}
             </div>
           </div>
           <div className="-mr-2 flex md:hidden">
@@ -114,42 +126,52 @@ const Navbar = () => {
             <NavLink
               to="/"
               onClick={() => setIsOpen(false)}
-              className={({ isActive }) =>
-                `block px-3 py-2 rounded-md text-base font-medium ${
-                  isActive
-                    ? "bg-gray-900 text-white"
-                    : "text-gray-300 hover:bg-gray-700 hover:text-white"
-                }`
-              }
+              className={mobileNavLinkClass}
             >
               Home
             </NavLink>
             <NavLink
               to="/about"
               onClick={() => setIsOpen(false)}
-              className={({ isActive }) =>
-                `block px-3 py-2 rounded-md text-base font-medium ${
-                  isActive
-                    ? "bg-gray-900 text-white"
-                    : "text-gray-300 hover:bg-gray-700 hover:text-white"
-                }`
-              }
+              className={mobileNavLinkClass}
             >
               About
             </NavLink>
             <NavLink
               to="/contact"
               onClick={() => setIsOpen(false)}
-              className={({ isActive }) =>
-                `block px-3 py-2 rounded-md text-base font-medium ${
-                  isActive
-                    ? "bg-gray-900 text-white"
-                    : "text-gray-300 hover:bg-gray-700 hover:text-white"
-                }`
-              }
+              className={mobileNavLinkClass}
             >
               Contact
             </NavLink>
+            {isAuthenticated ? (
+              <>
+                <NavLink
+                  to="/dashboard"
+                  onClick={() => setIsOpen(false)}
+                  className={mobileNavLinkClass}
+                >
+                  Dashboard
+                </NavLink>
+                <button
+                  onClick={() => {
+                    handleLogout();
+                    setIsOpen(false);
+                  }}
+                  className="block w-full text-left px-3 py-2 rounded-md text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white"
+                >
+                  Logout
+                </button>
+              </>
+            ) : (
+              <NavLink
+                to="/login"
+                onClick={() => setIsOpen(false)}
+                className={mobileNavLinkClass}
+              >
+                Login
+              </NavLink>
+            )}
           </div>
         </div>
       )}
