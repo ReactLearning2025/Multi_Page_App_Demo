@@ -17,7 +17,6 @@ function App() {
         <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-8 transition-colors duration-500">
           <Routes>
             <Route path="/" element={<Home />} />
-            <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
             <Route path="/user/:userId" element={<UserProfile />} />
             <Route path="/login" element={<Login />} />
@@ -25,6 +24,7 @@ function App() {
             {/* Protected Routes */}
             <Route element={<ProtectedRoute />}>
               <Route path="/dashboard" element={<Dashboard />} />
+              <Route path="/about" element={<About />} />
             </Route>
           </Routes>
         </div>
